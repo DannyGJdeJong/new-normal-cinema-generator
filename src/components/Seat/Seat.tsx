@@ -8,13 +8,18 @@ type SeatProps = {
 }
 
 const StyledDiv = styled.div`
-  width: 20px;
-  height: 20px;
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
   &.IsASeat {
-    background-color: grey;
+    background-color: yellow;
   }
   &.NotASeat {
-    background-color: red;
+    background-color: grey;
   }
 `;
 

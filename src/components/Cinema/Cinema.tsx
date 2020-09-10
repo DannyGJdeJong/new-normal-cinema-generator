@@ -2,18 +2,35 @@ import React, { FunctionComponent, useState, useEffect, MouseEvent } from 'react
 import styled from 'styled-components';
 import Seat from '../Seat'
 
-const StyledTable = styled.table`
-  position: absolute;
-  margin: 0;
-  padding: 5px;
-  width: 100%;
-  height: 100%;
-  background-color: #171219;
-`
+type CinemaProps = {
+  horizontalSize: number;
+  verticalSize: number;
+}
 
-const Cinema: FunctionComponent = () => {
-  const [horizontalSize, setHorizontalSize] = useState<number>(10);
-  const [verticalSize, setVerticalSize] = useState<number>(10);
+const StyledTable = styled.table`
+  background-color: #171219;
+  width: 100%;
+`;
+
+const StyledTd = styled.td`
+  height: 0;
+  padding: 0;
+  position: relative;
+
+  &::after, &::before {
+    content: '';
+
+    display: block;
+    padding-bottom: 50%;
+  }
+`;
+
+const StyledTextarea = styled.textarea`
+  overflow: hidden;
+  resize: none;
+`;
+
+const Cinema: FunctionComponent<CinemaProps> = ({horizontalSize, verticalSize}) => {
   const [seats, setSeats] = useState<{ [id: string] : boolean }>({});
 
   const handleSeatClick = (_: MouseEvent, id: string) => {
@@ -41,21 +58,20 @@ const Cinema: FunctionComponent = () => {
 
       return newSeats;
     });
-  }, [horizontalSize, verticalSize])
-
+  }, [horizontalSize, verticalSize]);
 
   return (
     <>
-    <StyledTable>
+    <StyledTable onContextMenu={() => false} onDragStart={() => false}>
       <tbody>
       {
-        Array(verticalSize).fill(1).map((_, y) =>
-        <tr>
+        [...Array(verticalSize)].map((_, y) =>
+        <tr key={',' + y}>
           {
-            Array(horizontalSize).fill(1).map((_, x) =>
-            <td>
+            [...Array(horizontalSize)].map((_, x) =>
+            <StyledTd key={x + ',' + y}>
               <Seat key={x + ',' + y} id={x + ',' + y} isASeat={seats[x + ',' + y]} clickHandler={handleSeatClick}></Seat>
-            </td>
+            </StyledTd>
             )
           }
         </tr>
@@ -64,7 +80,16 @@ const Cinema: FunctionComponent = () => {
       </tbody>
 
     </StyledTable>
-
+    <StyledTextarea
+      readOnly
+      rows={verticalSize + 2}
+      cols={horizontalSize}
+      value={
+        verticalSize + '\n' +
+        horizontalSize + '\n' +
+        [...Array(verticalSize)].map((_, y) => [...Array(horizontalSize)].map((_, x) => seats[x + ',' + y] ? '1' : '0').join('') + '\n').join('')
+      }
+    />
     </>
   );
 }
