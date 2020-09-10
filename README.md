@@ -1,2 +1,4 @@
 # new-normal-cinema-generator
-Cinema generator for the new normal cinema project.
+Cinema layout generator for Algorithms for Decision Support's assignment "New normal cinema seating".
+
+Available on https://cinema.denni.dev/
